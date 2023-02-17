@@ -1,0 +1,369 @@
+			TI J784S4 EVM Board
+
+
+1. About this document
+======================
+This document describes the common and non-hardware specific information.
+Please refer to README.hardware for hardware specific information.
+
+Dependencies
+------------
+This layer depends on the oe-core version supplied with Wind River Linux
+and the wr-kernel layer.
+
+
+Maintenance
+-----------
+This layer is maintained by Wind River Systems, Inc.
+Contact <support@windriver.com> or your support representative for more
+information on submitting changes.
+
+
+Building the ti-j7xxx layer
+----------------------------
+This layer and wr-kernel layer should be added to bblayers.conf. This
+is done automatically when using the Wind River configure wrapper.
+
+
+License
+-------
+Copyright (C) 2020 Wind River Systems, Inc.
+
+Source code included in the tree for individual recipes is under the LICENSE
+stated in the associated recipe (.bb file) unless otherwise stated.
+
+The metadata is under the following license unless otherwise stated.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+2. BSP Kernel and Distros
+=========================
+
+The following table summarizes the valid Wind River Linux distros for this BSP.
+'Y' in each content cell stands for supported; 'N' stands for not supported:
+
+  +--------------+-------------+-------------+------------------+
+  | valid/distro |   wrlinux   | wrlinux-cgl | wrlinux-std-sato |
+  +--------------+-------------+-------------+------------------+
+  |    valid     |      Y      |      N      |        Y         |
+  +--------------+-------------+-------------+------------------+
+
+For the supported kernel type for this BSP, please check the TARGET_SUPPORTED_KTYPES
+by running 'bitbake -e virtual/kernel | grep "^TARGET_SUPPORTED_KTYPES="'.
+
+Note: The preempt-rt ktype is available for this BSP/Machine at this time.
+
+
+3. Board Specific Patches
+=========================
+
+To get a list of patches applied to the kernel specific to this BSP along with
+patch descriptions use git-whatchanged on the default kernel. For example:
+
+	%> cd tmp-glibc/work-shared/<bsp_name>/kernel-source
+	%> git whatchanged <kernel_version>/standard/base..<kernel_version>/standard/<bsp_name>
+
+
+4. Boot Instructions
+====================
+
+The typical u-boot settings apply to these boards. You will need to use
+setenv, printenv and saveenv, to configure, display and store respectively
+your network configuration details and kernel command line. In order to
+TFTP a kernel, you need at a minimum to set the following:
+
+	- ipaddr
+	- gatewayip
+	- netmask
+	- serverip
+	- loadaddr
+	- dtbfile
+	- dtbaddr
+	- ethaddr
+
+Your board may ship with the values for the MAC address of
+the Ethernet interfaces set to the defaults compiled into the
+u-boot image.  You should set the ethaddr, eth1addr and so on
+as per the manufacturer assigned values, usually indicated with
+a sticker on the board.
+
+Target specifics are usually set in the "bootargs" variable, and the
+kernel image is set in the "bootfile" variable. Don't forget that if you
+want these values to be available after a power cycle you will need to run
+the saveenv command.
+
+Typically convenience macros exist that will create a complete bootargs
+command line for the kernel based on variables that contain individual
+settings.  Since these macros exist as env variables themselves, they
+may or may not be present depending on who installed and configured
+u-boot for the board.
+
+The console device for the board is ttyLF0 at 115200 baud. For the DTB
+address, 0x88000000 was used with success by Wind River. The load address
+must be high enough to not interfere with kernel decompression. A value
+of 0x82000000 was used with success for all kernels tested by Wind River.
+
+4.1 NFS Root File System
+------------------------
+
+Example settings for the monitor (u-boot) are shown below:
+
+nfsboot=setenv bootargs root=/dev/nfs rw nfsroot=$serverip:$rootpath \
+ip=$ipaddr:$serverip:$gatewayip:$netmask:$hostname:$netdev:off \
+console=$consoledev,$baudrate earlycon;tftp $loadaddr $bootfile; \
+tftp $fdtaddr $fdtfile;booti $loadaddr - $fdtaddr
+ethaddr=00:04:9F:02:00:FD
+loadaddr=0x82000000
+fdtaddr=0x88000000
+gatewayip=192.168.1.1
+netmask=255.255.255.0
+ipaddr=192.168.1.100
+serverip=192.168.1.2
+netdev=eth0
+bootfile=Image
+fdtfile=k3-j784s4-evm.dtb
+rootpath=/tftpboot/rootfs
+consoledev=ttyS2
+baudrate=115200
+
+5. Creating Partitioned Images(WIC)
+===================================
+
+User can use the OpenEmbedded Image Creator to create the properly partitioned
+image on a SD card. It generates partitioned images from existing OpenEmbedded
+build artifacts. Please refer to the following URL for more detailed partition
+information about WIC:
+
+https://docs.yoctoproject.org/singleindex.html#creating-partitioned-images-using-wic
+
+After having built your project, a partitioned WIC image will be created in the
+deploy folder as follows:
+
+  path_to_your_project/build/tmp-glibc/deploy/images/ti-j78xx/wrlinux-image-<rootfs_type>-ti-j78xx.wic
+
+There are two partitions in this WIC images, the first one is to hold the boot
+images, the second is the related root file system.
+
+5.1 An example to deploy bootloader into the first partition
+------------------------------------------------------------
+
+1) Deploy the created WIC image into SD card(/dev/sdx) in your host machine.
+
+   $ sudo dd if=wrlinux-image-<rootfs_type>-ti-j78xx.wic of=/dev/sdx
+
+2) Deploy the TI's bootloader files {tiboot3.bin and uenv*} into this /dev/sdx1
+
+   $ sudo mount /dev/sdx1 path_to_sdx1
+   $ cp path_to_your_bootloader/{tiboot3.bin and uenv*} path_to_sdx1
+   $ sync; sudo umount path_to_sdx1
+
+Note:
+1. The TI's bootloader tar package "boot-j784s4-evm.tar.gz" can be downloaded
+through TI's technical support.
+2. The TI's bootloader files u-boot.img & tispl.bin have been compiled and integrated into
+WRLinux WIC, they do not need to copy from TI SDK.
+
+5.2 Boot the board from the WIC SD card
+
+---------------------------------------
+Insert the SD card into the board and select this SD card as the boot device.
+
+If you copy uenv* correctly based on the above steps, the default u-boot
+environment parameters should work fine, there is no need to set them again.
+
+Alternative, you can also set the u-boot environment parameters to boot the board like the
+following:
+
+   $ setenv bootargs console=ttyS2,115200n8 earlycon root=/dev/mmcblk1p2 rw rootwait ip=dhcp
+   $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j784s4-evm.dtb; booti 0x82000000 - 0x88000000
+
+6. Features
+===========
+
+Before using the features below, it is recommended that you first add
+WRTEMPLATE to your build local.conf to add series tools (Such as: can/audio/ufs).
+
+Simply add line as follows to ${buildprj}/build/conf/local.conf:
+	WRTEMPLATE = "feature/bsp-extras"
+
+And it is recommended to refer to the "Foundational Components" of the sdk
+release note "Processor SDK Linux for J784s4" from the TI web.
+
+6.1 Multilib
+------------
+
+By default, this BSP is configured as a 64-bit kernel and 64-bit userspace.
+If a full 32-bit filesystem is necessary, use the prefix "lib32-" before
+the expected target image as follows:
+
+	# bitbake lib32-wrlinux-image-std
+
+6.2 CAN
+-------
+
+6.2.1 Verify
+------------
+
+Detail verification commands as below:
+
+	# ip link set can0 up type can bitrate 125000 dbitrate 5000000 fd on
+	# ip link set can1 up type can bitrate 125000 dbitrate 5000000 fd on
+	# candump can0 &
+	# cansend can1 5A1#11.22.33.44.55.66.77.88
+	# ip -d -s link show can0
+	# ip -d -s link show can1
+
+If can0 dumps data from can1, CAN feature works fine.
+
+6.3 IPC
+-------
+
+The J784S4 SOC has integrated ARM Cortex A72 and others cores like: Cortex-R5F cores, C71x DSPs.
+Through the CPSW9g virtual MAC, Cortex A72 can communicate with the remote cores using rpmsg.
+
+In order to verify the IPC feature, need to build wrlinux with below steps:
+
+Add line as follows to ${buildprj}/build/conf/local.conf:
+
+	KERNEL_FEATURES:append = " bsp/ti-j7xxx/ti-j7xxx-remoteproc.scc"
+
+Built and install them:
+
+	# bitbake wrlinux-image-xxx
+
+Initialize all the available remote cores in the u-boot:
+	$ rproc init;run boot_rprocs_mmc;
+
+Then booting the system, the cores firmwares will be auto-download and get the
+response.
+
+A TI linux user-space applications "rpmsg_char_simple" is available to simple
+test the IPC feature. Please refer to link "https://git.ti.com/cgit/rpmsg/ti-rpmsg-char/"
+to get more detailed information.
+
+Note:
+Since both the u-boot and linux kernel download the firmwares from the
+rootfs directory "/lib/firmware", so NFS is not applicable to this case.
+Only WIC mode works fine.
+
+6.4 Vision Apps
+---------------
+
+Vision Apps is a component within Processor SDK RTOS.
+
+Vision Apps integrates different components within Processor SDK RTOS (PSDK RTOS)
+like SysBIOS, PDK, OpenVX, Algorithms to realize system applications for vision
+processing like surround view.
+
+Vision Apps can be built or directly picked as out of the Box Demos from TI,
+prebuilt PSDK RTOS and Demo Data can be obtained though TI's technical support.
+It is recommended that you first refer to this guide document "out_of_box_j784s4.html"
+while using the vision apps.
+
+In order to run vision apps with full features on WRLinux, WRLinux should be built with:
+	- Modify the ${buildprj}/build/conf/local.conf to add:
+		WRTEMPLATE = "feature/bsp-extras"
+		KERNEL_FEATURES:append = " bsp/ti-j7xxx/ti-j7xxx-remoteproc.scc"
+	- Enable Graphics feature, please refer to "6.5.1 Build Image"
+
+Run vision apps on EVM target in WRLinux + RTOS mode (via SD card boot) with below
+steps:
+
+6.4.1 Usage and verification
+----------------------------
+
+Step 1: Download Prebuilt PSDK RTOS
+
+	$ cd {path/to/file}
+	$ tar xf ti-processor-sdk-rtos-j784s4-evm-<version>-prebuilt.tar.gz
+
+Step 2: Download Demo Data Sets
+	psdk_rtos_ti_data_set_xx_xx_xx.tar.gz
+	psdk_rtos_ti_data_set_ptk_xx_xx_xx.tar.gz
+
+Step 3: Prepare SD card
+	$ sudo ./mk-linux-card.sh /dev/sdx
+
+Note: make sure to give the correct device name to the following script, example
+/dev/sda is typically local hard disk.
+
+Step 4: Copy WRLinux Filesystem and Modify script
+	$ cp path_to_your_project/build/tmp-glibc/deploy/images/ti-j78xx/wrlinux-image-<rootfs_type>-ti-j78xx.tar.bz2 .
+	$ sed -i 's/tisdk-default-image-${TI_DEV_BOARD}.tar.xz/wrlinux-image-<rootfs_type>-ti-j78xx.tar.bz2/;43s/-I pxz -xf/-jxf/' install_to_sd_card.sh
+
+Note: for the name wrlinux-image-<rootfs_type>-ti-j78xx.tar.bz2, rootfs_type needs to be
+specified according to the rootfs type, like std or sato.
+
+Step 5: Install Filesystem and Boot Files
+	$ ./install_to_sd_card.sh
+	$ ./install_data_set_to_sd_card.sh <path/to/psdk_rtos_ti_data_set_xx_xx_xx.tar.gz>
+	$ ./install_data_set_to_sd_card.sh <path/to/psdk_rtos_ti_data_set_ptk_xx_xx_xx.tar.gz>
+
+Step 6: Run on EVM
+ First time only:
+	$ env default –a –f
+	$ saveenv
+	$ reset
+
+ Run series demos:
+	$ cd /opt/vision_apps
+	$ source ./vision_apps_init.sh
+	$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/python3.10/site-packages/dnf:/usr/lib
+	$ ./run_app_tidl_avp.sh                 - Auto valet parking demo (needs display)
+
+6.5 Graphics
+------------
+
+J784S4 device is enabled with 3D graphics accelerator based on the Rogue 8XE series
+from Imagination Technologies Inc. 3D-graphics apps call userspace libraries to drive
+the GPU directly by the graphics driver.
+
+Due to the software license terms, we are not permitted to redistribute these components.
+Due to this, we are unable to support the components (ti-img-rogue-driver, img-pvr-sdk and
+ti-img-rogue-umlibs) or directly enable them (ti-img-rogue-driver, img-pvr-sdk and
+ti-img-rogue-umlibs) within Wind River Linux. Please contact your silicon vendor if you have
+any questions about the software license terms.
+
+As below is the step how to build a graphics enabled system and verify the graphics feature:
+
+6.5.1 Build Image
+-----------------
+
+  1) set BB_NO_NETWORK as '0' in <path-of-project>/build/conf/local.conf file.
+
+  2) Launch bitbake to build an image with graphics support
+
+     $ cd path_to_your_project
+     $ . ./environment-setup-x86_64-wrlinuxsdk-linux
+     $ . ./oe-init-build-env
+     $ cat << _EOF >> conf/local.conf
+DISTRO ?= "wrlinux-graphics"
+MACHINE_FEATURES += " gpu"
+WRL_RECIPES:wr-ti-j7xxx += 'img-pvr-sdk'
+WRL_RECIPES:meta-ti-bsp += 'ti-img-rogue-umlibs'
+_EOF
+     $ bitbake wrlinux-image-std-sato
+
+6.6 Build U-Boot
+----------------
+
+By default, the u-boot image is compiled and installed. If you want u-boot to be manually
+compiled separately, use the following command：
+
+	# bitbake u-boot-ti-staging
