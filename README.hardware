@@ -49,7 +49,12 @@ the corresponding h/w features exist.
   o Storage
 	+ EMMC: 	32 GB memory, v5.1 compliant
 	+ SD/MMC: 	MicroSD Card Cage, UHS-I
+	+ OSPI Flash:   1x Octal-SPI, 512Mb Non-Volatile NOR Memories
 	+ EEPROM:       Inter-Integrated Circuit (I2C) EEPROM
+
+  o Multimedia
+	+ Display Port: VESA Display Port (v1.4)
+	+ Graphic: PowerVR IMG BXS-64-4
 
   o Misc Devices
 	+ UART: 2x USB FTDI (UART-over-USB)
@@ -67,11 +72,8 @@ The following features are not supported and validated:
 	x Power Mgmt
 	x UFS: 32GB Non-Volatile UFS Memory, 2Lane, Gear3
 	x Camera: Three CSI2-RX Camera Interfaces
-	x NOR Flash: Two 512Mb Non-Volatile NOR Memories, 1x Octal-SPI and 1x Quad-SPI
 	x NAND: 1Gb Non-Volatile NAND Memory, Octal-SPI
-	x Display Port: VESA Display Port (v1.4) 
 	x Audio: Audio Codec (PCM3168A)
-	x Graphic: PowerVR IMG BXS-64-4
 	x Video: Decoder & Encoder
 
 4. BSP Notes

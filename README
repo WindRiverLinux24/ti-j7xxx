@@ -24,6 +24,10 @@ Building the ti-j7xxx layer
 This layer and wr-kernel layer should be added to bblayers.conf. This
 is done automatically when using the Wind River configure wrapper.
 
+Note:
+To build wrlinux for TI J784S4 EVM board, use:
+
+	--machines ti-j78xx
 
 License
 -------
@@ -360,6 +364,18 @@ WRL_RECIPES:meta-ti-bsp += 'ti-img-rogue-umlibs'
 _EOF
      $ bitbake wrlinux-image-std-sato
 
+6.5.2 Verify Graphic feature
+----------------------------
+
+Connect with DP port(J8) and run below command:
+
+	#/usr/bin/SGX/demos/DRM/OGLES2ChameleonMan
+	#/usr/bin/SGX/demos/DRM/OGLES2Coverflow
+	#/usr/bin/SGX/demos/DRM/OGLES2ExampleUI
+	#/usr/bin/SGX/demos/DRM/OGLES2FilmTV
+	#/usr/bin/SGX/demos/DRM/OGLES2MagicLantern
+	#/usr/bin/SGX/demos/DRM/OGLES2Navigation
+
 6.6 Build U-Boot
 ----------------
 
@@ -367,3 +383,10 @@ By default, the u-boot image is compiled and installed. If you want u-boot to be
 compiled separately, use the following command：
 
 	# bitbake u-boot-ti-staging
+
+6.7 OSPI Flash
+--------------
+
+In order to use OSPI Flash, the configuration switch on J784s4 EVM board should be set with:
+
+SW2.1=OFF
