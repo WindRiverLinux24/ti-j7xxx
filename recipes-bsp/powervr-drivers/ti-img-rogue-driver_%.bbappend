@@ -15,8 +15,6 @@ TARGET_BVNC:ti-j7 = "22.104.208.318"
 
 MACHINE_KERNEL_PR:append:ti-j7 = "b"
 
-EXTRA_OEMAKE:ti-j7 += ' RGX_BVNC=${TARGET_BVNC} PVR_BUILD_DIR=${TARGET_PRODUCT} '
-
 do_compile:prepend:ti-j7() {
 	cp ${S}/build/linux/config/compilers/aarch64-linux-gnu.mk ${S}/build/linux/config/compilers/aarch64-wrs-linux.mk
 }
