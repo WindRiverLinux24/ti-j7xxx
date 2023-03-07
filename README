@@ -390,3 +390,18 @@ compiled separately, use the following command：
 In order to use OSPI Flash, the configuration switch on J784s4 EVM board should be set with:
 
 SW2.1=OFF
+
+6.8 USB
+-------
+
+The J784S4-EVB supports a single USB interface. Therefore, the user must configure
+for either the USB3.1 Type C interface [J4] or the USB2.0 Type A interface [J5]. Both can not
+be operated simultaneously. The default system is the USB3.1 Type C interface, in order to
+switch to the USB2.0 Type A interface, using the command on WRLinux shell:
+	$ gpioset 1 12=1
+
+Otherwise switch to the USB3.1 Type C interface, using the command on WRLinux shell:
+	$ gpioset 1 12=0
+
+Note: same as TI SDK, the bottom port of the two USB2.0 ports can not recognize
+U disk, the top port of the two USB2.0 ports works fine.
