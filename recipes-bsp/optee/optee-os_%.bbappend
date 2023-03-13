@@ -11,6 +11,8 @@ COMPATIBLE_MACHINE:ti-j7 = "ti-j7"
 
 DEPENDS:append:ti-j7 = " python3-cryptography-native"
 
+EXTRA_OEMAKE:append:ti-j7 = "${@ 'CFG_CONSOLE_UART='+ d.getVar('OPTEE_K3_USART') if d.getVar('OPTEE_K3_USART') else ''}"
+
 do_compile:prepend:ti-j7() {
     export TI_SECURE_DEV_PKG=${TI_SECURE_DEV_PKG}
 }
