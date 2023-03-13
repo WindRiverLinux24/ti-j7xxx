@@ -130,7 +130,7 @@ Example settings for the monitor (u-boot) are shown below:
 
 nfsboot=setenv bootargs root=/dev/nfs rw nfsroot=$serverip:$rootpath \
 ip=$ipaddr:$serverip:$gatewayip:$netmask:$hostname:$netdev:off \
-console=$consoledev,$baudrate earlycon;tftp $loadaddr $bootfile; \
+console=$consoledev,$baudrate earlycon=ns16550a,mmio32,0x02880000;tftp $loadaddr $bootfile; \
 tftp $fdtaddr $fdtfile;booti $loadaddr - $fdtaddr
 ethaddr=00:04:9F:02:00:FD
 loadaddr=0x82000000
@@ -194,7 +194,7 @@ environment parameters should work fine, there is no need to set them again.
 Alternative, you can also set the u-boot environment parameters to boot the board like the
 following:
 
-   $ setenv bootargs console=ttyS2,115200n8 earlycon root=/dev/mmcblk1p2 rw rootwait ip=dhcp
+   $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02880000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
    $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j784s4-evm.dtb; booti 0x82000000 - 0x88000000
 
 6. Features
