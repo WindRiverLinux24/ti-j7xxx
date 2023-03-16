@@ -299,7 +299,7 @@ Step 1: Download Prebuilt PSDK RTOS
 
 Step 2: Download Demo Data Sets
 	psdk_rtos_ti_data_set_xx_xx_xx.tar.gz
-	psdk_rtos_ti_data_set_ptk_xx_xx_xx.tar.gz
+	psdk_rtos_ti_data_set_xx_xx_xx_j784s4.tar.gz
 
 Step 3: Prepare SD card
 	$ sudo ./mk-linux-card.sh /dev/sdx
