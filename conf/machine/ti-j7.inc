@@ -26,7 +26,7 @@ MULTILIBS ?= "multilib:lib32"
 DEFAULTTUNE:virtclass-multilib-lib32 ?= "armv7athf-neon"
 PREFERRED_PROVIDER_virtual/kernel ??= "linux-yocto"
 PREFERRED_VERSION_linux-yocto ?= "5.15%"
-MACHINE_EXTRA_RRECOMMENDS += "linux-firmware-cadence linux-firmware-pvdec-full-bin"
+MACHINE_EXTRA_RRECOMMENDS += "linux-firmware-cadence linux-firmware-pvdec-full-bin linux-firmware-cnm"
 
 # to fix dtbo loading error due to the lack of symbols in the generated overlay dtbo file.
 KERNEL_EXTRA_ARGS = " DTC_FLAGS='-@'"
