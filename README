@@ -360,7 +360,7 @@ As below is the step how to build a graphics enabled system and verify the graph
 DISTRO ?= "wrlinux-graphics"
 MACHINE_FEATURES += " gpu"
 WRL_RECIPES:wr-ti-j7xxx += 'img-pvr-sdk'
-WRL_RECIPES:meta-ti-bsp += 'ti-img-rogue-umlibs'
+WRL_RECIPES:wr-ti-j7xxx += 'ti-img-rogue-umlibs ti-img-rogue-driver'
 _EOF
      $ bitbake wrlinux-image-std-sato
 
