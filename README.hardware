@@ -55,6 +55,7 @@ the corresponding h/w features exist.
   o Multimedia
 	+ Display Port: VESA Display Port (v1.4)
 	+ Graphic: PowerVR IMG BXS-64-4
+	+ Video: Decoder & Encoder
 
   o Misc Devices
 	+ UART: 2x USB FTDI (UART-over-USB)
@@ -74,7 +75,6 @@ The following features are not supported and validated:
 	x Camera: Three CSI2-RX Camera Interfaces
 	x NAND: 1Gb Non-Volatile NAND Memory, Octal-SPI
 	x Audio: Audio Codec (PCM3168A)
-	x Video: Decoder & Encoder
 
 4. BSP Notes
 ============

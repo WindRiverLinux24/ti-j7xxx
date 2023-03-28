@@ -1,0 +1,45 @@
+From bbe71cb610eec9b2185f1db71fc1aa86afe94f39 Mon Sep 17 00:00:00 2001
+From: Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
+Date: Wed, 10 Mar 2021 16:31:38 +0530
+Subject: [PATCH] Avoiding Failure to allocate required memory error.
+
+max variable is setting 32 which leads to following error
+"ERROR: from element /GstPipeline:pipeline0/v4l2h265dec:v4l2h265dec0:
+Failed to allocate required memory."
+
+Upstream-Status: Pending
+
+Signed-off-by: Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
+Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
+---
+ sys/v4l2/gstv4l2videodec.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/sys/v4l2/gstv4l2videodec.c b/sys/v4l2/gstv4l2videodec.c
+index 3042995..f9fac8c 100644
+--- a/sys/v4l2/gstv4l2videodec.c
++++ b/sys/v4l2/gstv4l2videodec.c
+@@ -713,10 +713,9 @@ gst_v4l2_video_dec_handle_frame (GstVideoDecoder * decoder,
+       GstStructure *config = gst_buffer_pool_get_config (pool);
+       guint min = MAX (self->v4l2output->min_buffers,
+           GST_V4L2_MIN_BUFFERS (self->v4l2output));
+-      guint max = VIDEO_MAX_FRAME;
+ 
+       gst_buffer_pool_config_set_params (config, self->input_state->caps,
+-          self->v4l2output->info.size, min, max);
++		      self->v4l2output->info.size, min, 2);
+ 
+       /* There is no reason to refuse this config */
+       if (!gst_buffer_pool_set_config (pool, config)) {
+@@ -724,7 +723,7 @@ gst_v4l2_video_dec_handle_frame (GstVideoDecoder * decoder,
+ 
+         if (!gst_buffer_pool_config_validate_params (config,
+                 self->input_state->caps, self->v4l2output->info.size, min,
+-                max)) {
++                2)) {
+           gst_structure_free (config);
+           goto activate_failed;
+         }
+-- 
+2.36.1
+
