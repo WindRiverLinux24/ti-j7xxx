@@ -12,6 +12,13 @@ K3_IMAGE_GEN_SRCREV:ti-j7 ?= "fde253192d1839723b777323596a697bf8d6332c"
 
 FILES:${PN}:ti-j7 += "${nonarch_base_libdir}"
 
+RTOS_ETH_FW_DIR:ti-j7 = "${S}/ti-eth/${PLAT_SFX}"
+RTOS_DM_FW_DIR:ti-j7 = "${S}/ti-dm/${PLAT_SFX}"
+RTOS_IPC_FW_DIR:ti-j7 = "${S}/ti-ipc/${PLAT_SFX}"
+LEGACY_ETH_FW_DIR:ti-j7 = "${D}${nonarch_base_libdir}/firmware/ethfw/"
+LEGACY_IPC_FW_DIR:ti-j7 = "${D}${nonarch_base_libdir}/firmware/pdk-ipc/"
+LEGACY_DM_FW_DIR:ti-j7  = "${D}${nonarch_base_libdir}/firmware/pdk-ipc/"
+
 do_install:ti-j78xx() {
     install -d ${LEGACY_IPC_FW_DIR}
     install -m 0644 ${RTOS_IPC_FW_DIR}/ipc_echo_test_mcu1_1_release_strip.xer5f ${LEGACY_IPC_FW_DIR}
