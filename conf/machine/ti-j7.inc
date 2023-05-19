@@ -25,18 +25,19 @@ do_image_wic[depends] += " mtools-native:do_populate_sysroot dosfstools-native:d
 MULTILIBS ?= "multilib:lib32"
 DEFAULTTUNE:virtclass-multilib-lib32 ?= "armv7athf-neon"
 PREFERRED_PROVIDER_virtual/kernel ??= "linux-yocto"
-PREFERRED_VERSION_linux-yocto ?= "5.15%"
+PREFERRED_VERSION_linux-yocto ?= "6.1%"
 MACHINE_EXTRA_RRECOMMENDS += "linux-firmware-cadence linux-firmware-pvdec-full-bin linux-firmware-cnm"
 
 # to fix dtbo loading error due to the lack of symbols in the generated overlay dtbo file.
 KERNEL_EXTRA_ARGS = " DTC_FLAGS='-@'"
 
-PREFERRED_PROVIDER_virtual/egl = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "ti-img-rogue-umlibs", "mesa", d)}"
-PREFERRED_PROVIDER_virtual/libgles2 = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "ti-img-rogue-umlibs", "mesa", d)}"
-PREFERRED_PROVIDER_virtual/libgles1 = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "ti-img-rogue-umlibs", "mesa", d)}"
-PREFERRED_PROVIDER_virtual/libgbm = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "ti-img-rogue-umlibs", "mesa", d)}"
-PREFERRED_PROVIDER_virtual/libgl = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-gl", "mesa", d)}"
-PREFERRED_PROVIDER_virtual/mesa = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-gl", "mesa", d)}"
+PREFERRED_PROVIDER_virtual/egl = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
+PREFERRED_PROVIDER_virtual/libgles3 = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
+PREFERRED_PROVIDER_virtual/libgles2 = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
+PREFERRED_PROVIDER_virtual/libgles1 = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
+PREFERRED_PROVIDER_virtual/libgbm = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
+PREFERRED_PROVIDER_virtual/libgl = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
+PREFERRED_PROVIDER_virtual/mesa = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
 
 NON_MULTILIB_RECIPES:append = " u-boot-ti-staging optee-os trusted-firmware-a ti-rtos-firmware"
 # For ostree

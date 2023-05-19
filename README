@@ -1,4 +1,4 @@
-			TI J784S4 EVM Board
+			TI J721E EVM Board
 
 
 1. About this document
@@ -19,15 +19,15 @@ Contact <support@windriver.com> or your support representative for more
 information on submitting changes.
 
 
-Building the ti-j7xxx layer
+Building the ti-j72xx layer
 ----------------------------
 This layer and wr-kernel layer should be added to bblayers.conf. This
 is done automatically when using the Wind River configure wrapper.
 
 Note:
-To build wrlinux for TI J784S4 EVM board, use:
+To build wrlinux for TI J721E EVM  board, use:
 
-	--machines ti-j78xx
+	--machines ti-j72xx
 
 License
 -------
@@ -62,11 +62,11 @@ THE SOFTWARE.
 The following table summarizes the valid Wind River Linux distros for this BSP.
 'Y' in each content cell stands for supported; 'N' stands for not supported:
 
-  +--------------+-------------+-------------+------------------+
-  | valid/distro |   wrlinux   | wrlinux-cgl | wrlinux-std-sato |
-  +--------------+-------------+-------------+------------------+
-  |    valid     |      Y      |      N      |        Y         |
-  +--------------+-------------+-------------+------------------+
+  +--------------+-------------+------------------+
+  | valid/distro |   wrlinux   | wrlinux-graphics |
+  +--------------+-------------+------------------+
+  |    valid     |      Y      |        Y         |
+  +--------------+-------------+------------------+
 
 For the supported kernel type for this BSP, please check the TARGET_SUPPORTED_KTYPES
 by running 'bitbake -e virtual/kernel | grep "^TARGET_SUPPORTED_KTYPES="'.
@@ -141,7 +141,7 @@ ipaddr=192.168.1.100
 serverip=192.168.1.2
 netdev=eth0
 bootfile=Image
-fdtfile=k3-j784s4-evm.dtb
+fdtfile=k3-j721e-common-proc-board.dtb
 rootpath=/tftpboot/rootfs
 consoledev=ttyS2
 baudrate=115200
@@ -159,7 +159,7 @@ https://docs.yoctoproject.org/singleindex.html#creating-partitioned-images-using
 After having built your project, a partitioned WIC image will be created in the
 deploy folder as follows:
 
-  path_to_your_project/build/tmp-glibc/deploy/images/ti-j78xx/wrlinux-image-<rootfs_type>-ti-j78xx.wic
+  path_to_your_project/build/tmp-glibc/deploy/images/ti-j72xx/wrlinux-image-<rootfs_type>-ti-j72xx.wic
 
 There are two partitions in this WIC images, the first one is to hold the boot
 images, the second is the related root file system.
@@ -169,19 +169,19 @@ images, the second is the related root file system.
 
 1) Deploy the created WIC image into SD card(/dev/sdx) in your host machine.
 
-   $ sudo dd if=wrlinux-image-<rootfs_type>-ti-j78xx.wic of=/dev/sdx
+   $ sudo dd if=wrlinux-image-<rootfs_type>-ti-j72xx.wic of=/dev/sdx
 
-2) Deploy the TI's bootloader files {tiboot3.bin and uenv*} into this /dev/sdx1
+2) Deploy the TI's bootloader files {tiboot3.bin sysfw.itb and uenv*} into this /dev/sdx1
 
    $ sudo mount /dev/sdx1 path_to_sdx1
-   $ cp path_to_your_bootloader/{tiboot3.bin and uenv*} path_to_sdx1
+   $ cp path_to_your_bootloader/{tiboot3.bin sysfw.itb and uenv*} path_to_sdx1
    $ sync; sudo umount path_to_sdx1
 
 Note:
-1. The TI's bootloader tar package "boot-j784s4-evm.tar.gz" can be downloaded
-through TI's technical support.
-2. The TI's bootloader files u-boot.img & tispl.bin have been compiled and integrated into
-WRLinux WIC, they do not need to copy from TI SDK.
+1. The TI's bootloader tar package "boot-j7-evm.tar.gz" can be downloaded from
+http://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-jacinto7/latest/index_FDS.html
+2. The TI's bootloader file u-boot.img has been compiled and integrated into
+WRLinux WIC, it does not need to copy from TI SDK.
 
 5.2 Boot the board from the WIC SD card
 
@@ -195,7 +195,7 @@ Alternative, you can also set the u-boot environment parameters to boot the boar
 following:
 
    $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02880000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
-   $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j784s4-evm.dtb; booti 0x82000000 - 0x88000000
+   $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j721e-common-proc-board.dtb; booti 0x82000000 - 0x88000000
 
 6. Features
 ===========
@@ -207,7 +207,7 @@ Simply add line as follows to ${buildprj}/build/conf/local.conf:
 	WRTEMPLATE = "feature/bsp-extras"
 
 And it is recommended to refer to the "Foundational Components" of the sdk
-release note "Processor SDK Linux for J784s4" from the TI web.
+release note "Processor SDK Linux for J721e" from the TI web.
 
 6.1 Multilib
 ------------
@@ -238,7 +238,7 @@ If can0 dumps data from can1, CAN feature works fine.
 6.3 IPC
 -------
 
-The J784S4 SOC has integrated ARM Cortex A72 and others cores like: Cortex-R5F cores, C71x DSPs.
+The J7 SOC has integrated ARM Cortex A72 and others cores like: Cortex-R5F cores, C71x and C66X DSPs.
 Through the CPSW9g virtual MAC, Cortex A72 can communicate with the remote cores using rpmsg.
 
 In order to verify the IPC feature, need to build wrlinux with below steps:
@@ -266,7 +266,34 @@ Since both the u-boot and linux kernel download the firmwares from the
 rootfs directory "/lib/firmware", so NFS is not applicable to this case.
 Only WIC mode works fine.
 
-6.4 Vision Apps
+6.4 Watchdog
+------------
+
+In order to use watchdog, the configuration switch on J721EX-PM2-SOM board should be set with:
+
+SW2.1=OFF, SW2.2=ON, SW3.1=ON, SW3.2=OFF
+
+6.4.1 Usage and verification
+----------------------------
+
+        # echo 1 > /dev/watchdog
+
+6.5 UFS
+-------
+
+6.5.1 Usage and verification
+----------------------------
+
+Running the commands in u-boot to scan the Universal Flash Subsystem (UFS)
+devices.
+	=> ufs init
+	=> scsi scan
+
+If no relevant device was found, please refer to the following link for more
+information:
+	https://e2e.ti.com/support/processors/f/791/t/922975
+
+6.6 Vision Apps
 ---------------
 
 Vision Apps is a component within Processor SDK RTOS.
@@ -275,31 +302,32 @@ Vision Apps integrates different components within Processor SDK RTOS (PSDK RTOS
 like SysBIOS, PDK, OpenVX, Algorithms to realize system applications for vision
 processing like surround view.
 
-Vision Apps can be built or directly picked as out of the Box Demos from TI,
-prebuilt PSDK RTOS and Demo Data can be obtained though TI's technical support.
-It is recommended that you first refer to this guide document "out_of_box_j784s4.html"
-while using the vision apps.
-
+Vision Apps can be built or directly picked as out of the Box Demos from TI web,
+prebuilt PSDK RTOS and Demo Data can be downloaded from:
+	https://www.ti.com/tool/download/PROCESSOR-SDK-RTOS-J721E/08.00.00.12
+It is recommended that you first refer to this guide document while using the
+vision apps:
+	https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/08_00_00_12/exports/docs/psdk_rtos/docs/user_guide/out_of_box_j721e.html
 In order to run vision apps with full features on WRLinux, WRLinux should be built with:
 	- Modify the ${buildprj}/build/conf/local.conf to add:
 		WRTEMPLATE = "feature/bsp-extras"
 		KERNEL_FEATURES:append = " bsp/ti-j7xxx/ti-j7xxx-remoteproc.scc"
-	- Enable Graphics feature, please refer to "6.5.1 Build Image"
+	- Enable Graphics feature, please refer to "6.7.1 Build Image"
 
 Run vision apps on EVM target in WRLinux + RTOS mode (via SD card boot) with below
 steps:
 
-6.4.1 Usage and verification
+6.6.1 Usage and verification
 ----------------------------
 
 Step 1: Download Prebuilt PSDK RTOS
 
 	$ cd {path/to/file}
-	$ tar xf ti-processor-sdk-rtos-j784s4-evm-<version>-prebuilt.tar.gz
+	$ tar xf ti-processor-sdk-rtos-j721e-evm-<version>-prebuilt.tar.gz
 
 Step 2: Download Demo Data Sets
 	psdk_rtos_ti_data_set_xx_xx_xx.tar.gz
-	psdk_rtos_ti_data_set_xx_xx_xx_j784s4.tar.gz
+	psdk_rtos_ti_data_set_ptk_xx_xx_xx.tar.gz
 
 Step 3: Prepare SD card
 	$ sudo ./mk-linux-card.sh /dev/sdx
@@ -308,10 +336,10 @@ Note: make sure to give the correct device name to the following script, example
 /dev/sda is typically local hard disk.
 
 Step 4: Copy WRLinux Filesystem and Modify script
-	$ cp path_to_your_project/build/tmp-glibc/deploy/images/ti-j78xx/wrlinux-image-<rootfs_type>-ti-j78xx.tar.bz2 .
-	$ sed -i 's/tisdk-default-image-${TI_DEV_BOARD}.tar.xz/wrlinux-image-<rootfs_type>-ti-j78xx.tar.bz2/;43s/-I pxz -xf/-jxf/' install_to_sd_card.sh
+	$ cp path_to_your_project/build/tmp-glibc/deploy/images/ti-j72xx/wrlinux-image-<rootfs_type>-ti-j72xx.tar.bz2 .
+	$ sed -i "s/tisdk-default-image-j7-evm.tar.xz/wrlinux-image-<rootfs_type>-ti-j72xx.tar.bz2/;41s/-xf/-jxf/" install_to_sd_card.sh
 
-Note: for the name wrlinux-image-<rootfs_type>-ti-j78xx.tar.bz2, rootfs_type needs to be
+Note: for the name wrlinux-image-<rootfs_type>-ti-j72xx.tar.bz2, rootfs_type needs to be
 specified according to the rootfs type, like std or sato.
 
 Step 5: Install Filesystem and Boot Files
@@ -331,10 +359,10 @@ Step 6: Run on EVM
 	$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/python3.10/site-packages/dnf:/usr/lib
 	$ ./run_app_tidl_avp.sh                 - Auto valet parking demo (needs display)
 
-6.5 Graphics
+6.7 Graphics
 ------------
 
-J784S4 device is enabled with 3D graphics accelerator based on the Rogue 8XE series
+J721E device is enabled with 3D graphics accelerator based on the Rogue 8XE series
 from Imagination Technologies Inc. 3D-graphics apps call userspace libraries to drive
 the GPU directly by the graphics driver.
 
@@ -346,7 +374,7 @@ any questions about the software license terms.
 
 As below is the step how to build a graphics enabled system and verify the graphics feature:
 
-6.5.1 Build Image
+6.7.1 Build Image
 -----------------
 
   1) set BB_NO_NETWORK as '0' in <path-of-project>/build/conf/local.conf file.
@@ -359,15 +387,15 @@ As below is the step how to build a graphics enabled system and verify the graph
      $ cat << _EOF >> conf/local.conf
 DISTRO ?= "wrlinux-graphics"
 MACHINE_FEATURES += " gpu"
-WRL_RECIPES:wr-ti-j7xxx += 'img-pvr-sdk'
-WRL_RECIPES:wr-ti-j7xxx += 'ti-img-rogue-umlibs ti-img-rogue-driver'
+CUSTOMER_RECIPES:wr-ti-j7xxx += 'img-pvr-sdk'
+CUSTOMER_RECIPES:meta-ti-bsp += 'ti-img-rogue-umlibs ti-img-rogue-driver mesa-pvr'
 _EOF
      $ bitbake wrlinux-image-std-sato
 
-6.5.2 Verify Graphic feature
+6.7.2 Verify Graphic feature
 ----------------------------
 
-Connect with DP port(J8) and run below command:
+Connect with DP port(J37) and run below command:
 
 	#/usr/bin/SGX/demos/DRM/OGLES2ChameleonMan
 	#/usr/bin/SGX/demos/DRM/OGLES2Coverflow
@@ -376,47 +404,21 @@ Connect with DP port(J8) and run below command:
 	#/usr/bin/SGX/demos/DRM/OGLES2MagicLantern
 	#/usr/bin/SGX/demos/DRM/OGLES2Navigation
 
-6.6 Build U-Boot
-----------------
-
-By default, the u-boot image is compiled and installed. If you want u-boot to be manually
-compiled separately, use the following command：
-
-	# bitbake u-boot-ti-staging
-
-6.7 OSPI Flash
---------------
-
-In order to use OSPI Flash, the configuration switch on J784s4 EVM board should be set with:
-
-SW2.1=OFF
-
-6.8 USB
--------
-
-The J784S4-EVB supports a single USB interface. Therefore, the user must configure
-for either the USB3.1 Type C interface [J4] or the USB2.0 Type A interface [J5]. Both can not
-be operated simultaneously. The default system is the USB3.1 Type C interface, in order to
-switch to the USB2.0 Type A interface, using the command on WRLinux shell:
-	$ gpioset 1 12=1
-
-Otherwise switch to the USB3.1 Type C interface, using the command on WRLinux shell:
-	$ gpioset 1 12=0
-
-Note: same as TI SDK, the bottom port of the two USB2.0 ports can not recognize
-U disk, the top port of the two USB2.0 ports works fine.
-
-6.9 Video
+6.8 Video
 ---------
 
-The Encoder/Decoder (VENC/VDEC) is found on the J784S4 SoC. Combined H.264 and H.265
-encoder/decoder used in the Texas Instruments J784S4 SoC.
+J721E has the following hardware accelerators:
+
+Multi-Standard HD Video Decoder (DECODER) based on D5520MP2 from Imagination
+Technologies for accelerating multimedia decode.
+Multi-Standard HD Video Encoder (ENCODER) based on VXE384MP2 from Imagination
+Technologies for accelerating multimedia encode.
 
 The Linux Kernel Drivers has integrated the Video Decoder and Encoder as module by default.
 Because of the license issue, you can manually build the Image as below to
 integrate the gstreamer related packages:
 
-6.9.1 Build Image
+6.8.1 Build Image
 -----------------
 
   1) set BB_NO_NETWORK as '0' in ${buildprj}/build/conf/local.conf file.
@@ -430,10 +432,17 @@ _EOF
 
   3) bitbake wrlinux-image-xxx
 
-6.9.2 Verify Multimedia feature
+6.8.2 Verify Multimedia feature
 -------------------------------
 
 An example to test with GStreamer Pipelines on target board:
 
 	$ gst-launch-1.0 filesrc location=/<path_to_file>  ! rawvideoparse ! v4l2h264enc ! filesink location=/<path_to_file> sync=true
 
+6.9 Build U-Boot
+----------------
+
+By default, the u-boot image is compiled and installed. If you want u-boot to be manually
+compiled separately, use the following command：
+
+	# bitbake u-boot-ti-staging
