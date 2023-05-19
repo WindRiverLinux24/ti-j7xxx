@@ -36,10 +36,6 @@ SRC_URI_MBEDTLS ??= ""
 LIC_FILES_CHKSUM_MBEDTLS ??= ""
 # add MBEDTLS to our sources if activated
 SRC_URI:append = " ${@bb.utils.contains('TFA_MBEDTLS', '1', '${SRC_URI_MBEDTLS}', '', d)}"
-SRC_URI:append = " file://0001-fix-auth-forbid-junk-after-extensions.patch \
-                file://0002-fix-auth-require-at-least-one-extension-to-be-presen.patch \
-                file://0003-fix-auth-avoid-out-of-bounds-read-in-auth_nvctr.patch \
-                file://0004-fix-auth-properly-validate-X.509-extensions.patch"
 # add mbed TLS chksum
 LIC_FILES_CHKSUM += "${@bb.utils.contains('TFA_MBEDTLS', '1', '${LIC_FILES_CHKSUM_MBEDTLS}', '', d)}"
 # add mbed TLS to version

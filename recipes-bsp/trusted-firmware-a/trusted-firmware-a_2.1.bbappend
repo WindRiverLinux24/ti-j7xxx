@@ -1,7 +1,10 @@
 PV:ti-j7 = "2.1"
+FILESEXTRAPATHS:prepend:ti-j7 := "${THISDIR}/files:"
 LIC_FILES_CHKSUM:ti-j7 = "file://license.rst;md5=1dd070c98a281d18d9eefd938729b031"
 SRC_URI:ti-j7 = "git://git.trustedfirmware.org/TF-A/trusted-firmware-a.git;protocol=https;name=tfa;branch=master"
-SRCREV_tfa:ti-j7 = "1309c6c805190bd376c0561597653f3f8ecd0f58"
+SRCREV_tfa:ti-j7 = "2fcd408bb3a6756767a43c073c597cef06e7f2d5"
+SRC_URI:append:ti-j7 = " file://rwx-segments-ti.patch"
+
 TFA_BUILD_TARGET:ti-j7 = "all"
 TFA_INSTALL_TARGET:ti-j7 = "bl31"
 TFA_SPD:ti-j7 = "opteed"

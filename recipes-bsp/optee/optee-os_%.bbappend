@@ -2,7 +2,7 @@ FILESEXTRAPATHS:prepend:ti-j7 := "${THISDIR}/${PN}:"
 
 OPTEEOUTPUTMACHINE:ti-j7 = "k3"
 
-SRCREV:ti-j7 = "afacf356f9593a7f83cae9f96026824ec242ff52"
+SRCREV:ti-j7 = "8e74d47616a20eaa23ca692f4bbbf917a236ed94"
 
 FILES:${PN}:ti-j7 += "/lib/firmware/*"
 
