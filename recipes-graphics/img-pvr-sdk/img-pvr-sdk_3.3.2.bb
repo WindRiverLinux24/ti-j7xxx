@@ -48,9 +48,6 @@ do_install () {
     install -m 755 ${S}/targetfs/${SRC_DIR}/Examples/Advanced/DRM/OGLES2FilmTV ${D}${bindir}/SGX/demos/DRM/
 }
 
-
-RDEPENDS:${PN} = "libegl"
-
 INHIBIT_PACKAGE_STRIP = "1"
 
 INSANE_SKIP:${PN} = " dev-so staticdev already-stripped ldflags file-rdeps"
