@@ -130,7 +130,7 @@ Example settings for the monitor (u-boot) are shown below:
 
 nfsboot=setenv bootargs root=/dev/nfs rw nfsroot=$serverip:$rootpath \
 ip=$ipaddr:$serverip:$gatewayip:$netmask:$hostname:$netdev:off \
-console=$consoledev,$baudrate earlycon=ns16550a,mmio32,0x02880000;tftp $loadaddr $bootfile; \
+console=$consoledev,$baudrate earlycon=ns16550a,mmio32,0x02800000;tftp $loadaddr $bootfile; \
 tftp $fdtaddr $fdtfile;booti $loadaddr - $fdtaddr
 ethaddr=00:04:9F:02:00:FD
 loadaddr=0x82000000
@@ -194,7 +194,7 @@ environment parameters should work fine, there is no need to set them again.
 Alternative, you can also set the u-boot environment parameters to boot the board like the
 following:
 
-   $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02880000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
+   $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
    $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j721e-common-proc-board.dtb; booti 0x82000000 - 0x88000000
 
 6. Features
@@ -437,7 +437,7 @@ _EOF
 
 An example to test with GStreamer Pipelines on target board:
 
-	$ gst-launch-1.0 filesrc location=/<path_to_file>  ! rawvideoparse ! v4l2h264enc ! filesink location=/<path_to_file> sync=true
+	$ gst-launch-1.0 filesrc location=/<path_to_file>  ! qtdemux ! h264parse ! v4l2h264dec ! videoconvert ! v4l2h264enc ! filesink location=/<path_to_file>
 
 6.9 Build U-Boot
 ----------------
