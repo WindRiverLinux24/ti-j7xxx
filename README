@@ -156,6 +156,20 @@ information about WIC:
 
 https://docs.yoctoproject.org/singleindex.html#creating-partitioned-images-using-wic
 
+5.1 Build WIC image within sysfw.itb & tiboot3.bin in boot partition
+--------------------------------------------------------------------
+
+sysfw.itb & tiboot3.bin are the firmwares of TI's MCU. Because of license issue,
+they aren't integrated into WRLinux.
+
+The TI's bootloader tar package "boot-j7-evm.tar.gz" includes the two firmwares,
+they can be downloaded from website:
+http://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-jacinto7/latest/index_FDS.html
+
+And then add one line below to local.conf:
+
+IMAGE_BOOT_FILES:append = " <path-to-sysfw.itb>/sysfw.itb;sysfw.itb <path-to-tiboot3.bin>/tiboot3.bin;tiboot3.bin"
+
 After having built your project, a partitioned WIC image will be created in the
 deploy folder as follows:
 
@@ -164,35 +178,19 @@ deploy folder as follows:
 There are two partitions in this WIC images, the first one is to hold the boot
 images, the second is the related root file system.
 
-5.1 An example to deploy bootloader into the first partition
-------------------------------------------------------------
+5.2 Deploy the created WIC image
+--------------------------------
 
-1) Deploy the created WIC image into SD card(/dev/sdx) in your host machine.
+Deploy the created WIC image into SD card(/dev/sdx) in your host machine.
 
    $ sudo dd if=wrlinux-image-<rootfs_type>-ti-j72xx.wic of=/dev/sdx
 
-2) Deploy the TI's bootloader files {tiboot3.bin sysfw.itb and uenv*} into this /dev/sdx1
-
-   $ sudo mount /dev/sdx1 path_to_sdx1
-   $ cp path_to_your_bootloader/{tiboot3.bin sysfw.itb and uenv*} path_to_sdx1
-   $ sync; sudo umount path_to_sdx1
-
-Note:
-1. The TI's bootloader tar package "boot-j7-evm.tar.gz" can be downloaded from
-http://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-jacinto7/latest/index_FDS.html
-2. The TI's bootloader file u-boot.img has been compiled and integrated into
-WRLinux WIC, it does not need to copy from TI SDK.
-
-5.2 Boot the board from the WIC SD card
-
+5.3 Boot the board from the WIC SD card
 ---------------------------------------
+
 Insert the SD card into the board and select this SD card as the boot device.
 
-If you copy uenv* correctly based on the above steps, the default u-boot
-environment parameters should work fine, there is no need to set them again.
-
-Alternative, you can also set the u-boot environment parameters to boot the board like the
-following:
+Board can boot automatically by set the below uboot environment variables:
 
    $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
    $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j721e-common-proc-board.dtb; booti 0x82000000 - 0x88000000
