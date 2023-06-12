@@ -1,0 +1,37 @@
+From 2ce64304f7b33399041250d3117bfb0137a0c25f Mon Sep 17 00:00:00 2001
+From: Xulin Sun <xulin.sun@windriver.com>
+Date: Mon, 12 Jun 2023 16:44:54 +0800
+Subject: [PATCH] build: core: set 64k as default GENERALNON4KHEAPPAGESIZE
+
+Currently the PVRSRV_APPHINT_GENERALNON4KHEAPPAGESIZE is 16K, the OS
+default page size is 64k, the following error will occur. To fix it,
+change it to 64k.
+PVR_K:  236: RGX Device registered with BVNC 22.104.208.318
+PVR_K:(Error):   236: Non4K page size smaller than OS page size in _ReadNon4KHeapPageSize() [4758]
+PVR_K:(Error):   236: _ReadNon4KHeapPageSize() failed (PVRSRV_ERROR_INVALID_NON4K_HEAP_PAGESIZE) in RGXRegisterDevice() [5048]
+PVR_K:(Error):   236: RGXRegisterDevice() failed (PVRSRV_ERROR_INVALID_NON4K_HEAP_PAGESIZE) in PVRSRVCommonDeviceCreate() [2099]
+[drm:pvr_drm_load [pvrsrvkm]] *ERROR* failed to create device node for device 000000001ebd9fc0 (PVRSRV_ERROR_DEVICE_REGISTER_FAILED)
+
+(LOCAL REV: NOT UPSTREAM) - Wrlinux specific
+
+Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
+---
+ build/linux/config/core.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/linux/config/core.mk b/build/linux/config/core.mk
+index d25732b..6d6b627 100644
+--- a/build/linux/config/core.mk
++++ b/build/linux/config/core.mk
+@@ -1575,7 +1575,7 @@ $(eval $(call AppHintConfigC,PVRSRV_APPHINT_HWRDEBUGDUMPLIMIT,APPHNT_BLDVAR_DBGD
+ Limit for the number of HWR debug dumps produced))
+ $(eval $(call AppHintConfigC,PVRSRV_APPHINT_ENABLETRUSTEDDEVICEACECONFIG,IMG_FALSE,\
+ Enable trusted device ACE config))
+-$(eval $(call AppHintConfigC,PVRSRV_APPHINT_GENERALNON4KHEAPPAGESIZE,0x4000,\
++$(eval $(call AppHintConfigC,PVRSRV_APPHINT_GENERALNON4KHEAPPAGESIZE,0x10000,\
+ Alternate general heap page size (i.e. 4K,16K [default],64K,256K,1M,2M)))
+ $(eval $(call AppHintConfigC,PVRSRV_APPHINT_HWPERFCLIENTBUFFERSIZE,786432,\
+ Buffer size in bytes for client HWPerf streams))
+-- 
+2.40.1
+
