@@ -11,5 +11,6 @@ do_install:append:ti-j7 () {
 FILES:${PN}:append:ti-j7 = " /lib/firmware/ \
 		              /usr/lib/"
 
+ALLOW_EMPTY:${PN}-firmware:ti-j7 = "1"
 
 INSANE_SKIP:${PN}:append:ti-j7 = " ldflags arch"
