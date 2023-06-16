@@ -207,19 +207,10 @@ Simply add line as follows to ${buildprj}/build/conf/local.conf:
 And it is recommended to refer to the "Foundational Components" of the sdk
 release note "Processor SDK Linux for J721e" from the TI web.
 
-6.1 Multilib
-------------
-
-By default, this BSP is configured as a 64-bit kernel and 64-bit userspace.
-If a full 32-bit filesystem is necessary, use the prefix "lib32-" before
-the expected target image as follows:
-
-	# bitbake lib32-wrlinux-image-std
-
-6.2 CAN
+6.1 CAN
 -------
 
-6.2.1 Verify
+6.1.1 Verify
 ------------
 
 Detail verification commands as below:
@@ -233,7 +224,7 @@ Detail verification commands as below:
 
 If can0 dumps data from can1, CAN feature works fine.
 
-6.3 IPC
+6.2 IPC
 -------
 
 The J7 SOC has integrated ARM Cortex A72 and others cores like: Cortex-R5F cores, C71x and C66X DSPs.
@@ -264,22 +255,22 @@ Since both the u-boot and linux kernel download the firmwares from the
 rootfs directory "/lib/firmware", so NFS is not applicable to this case.
 Only WIC mode works fine.
 
-6.4 Watchdog
+6.3 Watchdog
 ------------
 
 In order to use watchdog, the configuration switch on J721EX-PM2-SOM board should be set with:
 
 SW2.1=OFF, SW2.2=ON, SW3.1=ON, SW3.2=OFF
 
-6.4.1 Usage and verification
+6.3.1 Usage and verification
 ----------------------------
 
         # echo 1 > /dev/watchdog
 
-6.5 UFS
+6.4 UFS
 -------
 
-6.5.1 Usage and verification
+6.4.1 Usage and verification
 ----------------------------
 
 Running the commands in u-boot to scan the Universal Flash Subsystem (UFS)
@@ -291,7 +282,7 @@ If no relevant device was found, please refer to the following link for more
 information:
 	https://e2e.ti.com/support/processors/f/791/t/922975
 
-6.6 Graphics
+6.5 Graphics
 ------------
 
 J721E device is enabled with 3D graphics accelerator based on the Rogue 8XE series
@@ -306,7 +297,7 @@ any questions about the software license terms.
 
 As below is the step how to build a graphics enabled system and verify the graphics feature:
 
-6.6.1 Build Image
+6.5.1 Build Image
 -----------------
 
   1) set BB_NO_NETWORK as '0' in <path-of-project>/build/conf/local.conf file.
@@ -324,7 +315,7 @@ CUSTOMER_RECIPES:meta-ti-bsp += 'ti-img-rogue-umlibs ti-img-rogue-driver mesa-pv
 _EOF
      $ bitbake wrlinux-image-std-sato
 
-6.7 Video
+6.6 Video
 ---------
 
 J721E has the following hardware accelerators:
@@ -338,7 +329,7 @@ The Linux Kernel Drivers has integrated the Video Decoder and Encoder as module 
 Because of the license issue, you can manually build the Image as below to
 integrate the gstreamer related packages:
 
-6.7.1 Build Image
+6.6.1 Build Image
 -----------------
 
   1) set BB_NO_NETWORK as '0' in ${buildprj}/build/conf/local.conf file.
@@ -352,14 +343,14 @@ _EOF
 
   3) bitbake wrlinux-image-xxx
 
-6.7.2 Verify Multimedia feature
+6.6.2 Verify Multimedia feature
 -------------------------------
 
 An example to test with GStreamer Pipelines on target board:
 
 	$ gst-launch-1.0 filesrc location=/<path_to_file>  ! qtdemux ! h264parse ! v4l2h264dec ! videoconvert ! v4l2h264enc ! filesink location=/<path_to_file>
 
-6.8 Build U-Boot
+6.7 Build U-Boot
 ----------------
 
 By default, the u-boot image is compiled and installed. If you want u-boot to be manually
