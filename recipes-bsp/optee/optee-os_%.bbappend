@@ -4,7 +4,8 @@ OPTEEOUTPUTMACHINE:ti-j7 = "k3"
 
 SRCREV:ti-j7 = "8e74d47616a20eaa23ca692f4bbbf917a236ed94"
 
-FILES:${PN}:ti-j7 += "/lib/firmware/*"
+FILES:${PN}:ti-j7 += "/lib/firmware/* \
+		      /usr/lib/firmware/*"
 
 COMPATIBLE_MACHINE = "(^$)"
 COMPATIBLE_MACHINE:ti-j7 = "ti-j7"
