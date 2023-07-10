@@ -246,9 +246,10 @@ Initialize all the available remote cores in the u-boot:
 Then booting the system, the cores firmwares will be auto-download and get the
 response.
 
-A TI linux user-space applications "rpmsg_char_simple" is available to simple
-test the IPC feature. Please refer to link "https://git.ti.com/cgit/rpmsg/ti-rpmsg-char/"
-to get more detailed information.
+By default, the kernel config "CONFIG_SAMPLE_RPMSG_CLIENT" is enabled, the rpmsg
+client sample is available to simple test the IPC feature. In the booting stage
+it demonstrates how to communicate with an AMP-configured remote processor
+over the rpmsg bus.
 
 Note:
 Since both the u-boot and linux kernel download the firmwares from the
