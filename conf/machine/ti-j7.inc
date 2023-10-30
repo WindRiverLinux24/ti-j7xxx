@@ -21,6 +21,9 @@ WKS_FILE ?= "j7xxx-sdimage.wks"
 IMAGE_INSTALL:append = " kernel-devicetree kernel-image-image"
 do_image_wic[depends] += " mtools-native:do_populate_sysroot dosfstools-native:do_populate_sysroot"
 
+KERNEL_DTBDEST = "${KERNEL_IMAGEDEST}/dtb"
+KERNEL_DTBVENDORED = "1"
+
 # multilib support
 MULTILIBS ?= "multilib:lib32"
 DEFAULTTUNE:virtclass-multilib-lib32 ?= "armv7athf-neon"
@@ -37,6 +40,7 @@ PREFERRED_PROVIDER_virtual/libgles2 = "${@bb.utils.contains("MACHINE_FEATURES", 
 PREFERRED_PROVIDER_virtual/libgles1 = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
 PREFERRED_PROVIDER_virtual/libgbm = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
 PREFERRED_PROVIDER_virtual/libgl = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
+PREFERRED_PROVIDER_virtual/libglx = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
 PREFERRED_PROVIDER_virtual/mesa = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
 
 NON_MULTILIB_RECIPES:append = " u-boot-ti-staging optee-os trusted-firmware-a ti-rtos-firmware"
@@ -75,4 +79,3 @@ OSTREE_WKS_EFI_SIZE ?= "--size=64M"
 # For ustart.img
 OSTREE_NETINST_DEV ?= "/dev/mmcblk0,/dev/sda,/dev/vda"
 OSTREE_NETINST_ARGS ?= "${OSTREE_CONSOLE} bl=ufsd rdinit=/install instdev=${OSTREE_NETINST_DEV} instname=wrlinux instbr=\$BRANCH insturl=\$URL instab=${OSTREE_USE_AB} instsf=1 instdate=BUILD_DATE"
-
