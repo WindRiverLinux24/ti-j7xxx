@@ -43,7 +43,7 @@ PREFERRED_PROVIDER_virtual/libgl = "${@bb.utils.contains("MACHINE_FEATURES", "gp
 PREFERRED_PROVIDER_virtual/libglx = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
 PREFERRED_PROVIDER_virtual/mesa = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
 
-NON_MULTILIB_RECIPES:append = " u-boot-ti-staging optee-os trusted-firmware-a ti-rtos-firmware"
+NON_MULTILIB_RECIPES:append = " u-boot-ti-staging optee-os trusted-firmware-a ti-rtos-firmware ti-dm-fw ti-eth-fw ti-k3-secdev"
 # For ostree
 OSTREE_BOOTLOADER_INCLUDE ?= ""
 
