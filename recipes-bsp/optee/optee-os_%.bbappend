@@ -7,7 +7,6 @@ SRCREV:ti-j7 = "8e74d47616a20eaa23ca692f4bbbf917a236ed94"
 FILES:${PN}:ti-j7 += "/lib/firmware/* \
 		      /usr/lib/firmware/*"
 
-COMPATIBLE_MACHINE = "(^$)"
 COMPATIBLE_MACHINE:ti-j7 = "ti-j7"
 
 DEPENDS:append:ti-j7 = " python3-cryptography-native"

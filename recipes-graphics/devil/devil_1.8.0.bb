@@ -23,5 +23,4 @@ PACKAGECONFIG[png] = "-DIL_NO_PNG=0,-DIL_NO_PNG=1,libpng,"
 
 inherit pkgconfig cmake
 
-COMPATIBLE_MACHINE = "^$"
 COMPATIBLE_MACHINE:ti-j7 = "ti-j7"
