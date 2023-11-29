@@ -464,10 +464,21 @@ It is recommended that you first refer to this guide document "out_of_box_j784s4
 while using the vision apps.
 
 In order to run vision apps with full features on WRLinux, WRLinux should be built with:
-	- Modify the ${buildprj}/build/conf/local.conf to add:
-		WRTEMPLATE = "feature/bsp-extras"
-		KERNEL_FEATURES:append = " bsp/ti-j7xxx/ti-j7xxx-remoteproc.scc"
-	- Enable Graphics feature, please refer to "6.5.1 Build Image"
+	1. Modify the ${buildprj}/build/conf/local.conf to add:
+
+	   $ cat << _EOF >> conf/local.conf
+WRTEMPLATE = "feature/bsp-extras"
+KERNEL_FEATURES:append = " bsp/ti-j7xxx/ti-j7xxx-remoteproc.scc"
+_EOF
+	2. Enable Graphics feature, please refer to "6.5.1 Build Image"
+	3. Add vision-apps & tidl & tiovx related packages, it needs to enable the previous
+	   graphic feature first. Add line as follows to ${buildprj}/build/conf/local.conf:
+
+	   $ cat << _EOF >> conf/local.conf
+CUSTOMER_RECIPES:openembedded-layer += 'yaml-cpp'
+CUSTOMER_RECIPES:openembedded-layer += 'glm'
+IMAGE_INSTALL:append:ti-j7 = ' ti-vision-apps-dev ti-tidl-dev edgeai-apps-utils-source edgeai-tiovx-kernels-dev edgeai-tiovx-kernels-source edgeai-tiovx-modules-dev edgeai-tiovx-modules-source ti-edgeai-firmware edgeai-tiovx-apps-dev edgeai-tiovx-apps-source'
+_EOF
 
 Run vision apps on EVM target in WRLinux + RTOS mode (via SD card boot) with below
 steps:
@@ -496,12 +507,7 @@ For J721E EVM:
 	$ sed -i "s/tisdk-default-image-j7-evm.tar.xz/wrlinux-image-<rootfs_type>-ti-j72xx.tar.bz2/;41s/-xf/-jxf/" install_to_sd_card.sh
 For J784S4 EVM:
 	$ cp path_to_your_project/build/tmp-glibc/deploy/images/ti-j78xx/wrlinux-image-<rootfs_type>-ti-j78xx.tar.bz2 .
-	$ sed -i 's/tisdk-adas-image-j784s4-evm.tar.xz/wrlinux-image-std-sato-ti-j78xx.tar.bz2/;40s/-xf/-jxf/' install_to_sd_card.sh
-	$ sed -i '43i sudo mkdir $rootfs_folder/usr/include/processor_sdk\n
-	sudo mkdir $rootfs_folder/lib/firmware/vision_apps_evm\n
-	sudo mkdir $rootfs_folder/usr/include/edgeai-apps-utils\n
-	sudo mkdir $rootfs_folder/usr/include/edgeai-tiovx-kernels\n
-	sudo mkdir $rootfs_folder/usr/include/edgeai-tiovx-modules' install_to_sd_card.sh
+	$ sed -i 's/tisdk-adas-image-j784s4-evm.tar.xz/wrlinux-image-<rootfs_type>-ti-j78xx.tar.bz2/;40s/-xf/-jxf/' install_to_sd_card.sh
 
 Note: for the name wrlinux-image-<rootfs_type>-ti-j78xx.tar.bz2, rootfs_type needs to be
 specified according to the rootfs type, like std or sato.
@@ -513,7 +519,7 @@ Step 5: Install Filesystem and Boot Files
 
 Step 6: Run on EVM
  First time only:
-	$ env default –a –f
+	$ env default -a -f
 	$ reset
 
  Run series demos:
