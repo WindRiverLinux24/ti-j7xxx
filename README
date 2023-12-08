@@ -477,8 +477,11 @@ _EOF
 	   $ cat << _EOF >> conf/local.conf
 CUSTOMER_RECIPES:openembedded-layer += 'yaml-cpp'
 CUSTOMER_RECIPES:openembedded-layer += 'glm'
+CUSTOMER_RECIPES:meta-edgeai +=  'ti-vision-apps ti-tidl edgeai-apps-utils edgeai-tiovx-kernels edgeai-tiovx-modules ti-edgeai-firmware edgeai-tiovx-apps'
 IMAGE_INSTALL:append:ti-j7 = ' ti-vision-apps-dev ti-tidl-dev edgeai-apps-utils-source edgeai-tiovx-kernels-dev edgeai-tiovx-kernels-source edgeai-tiovx-modules-dev edgeai-tiovx-modules-source ti-edgeai-firmware edgeai-tiovx-apps-dev edgeai-tiovx-apps-source'
 _EOF
+	4. Add meta-ti-extras layer:
+	   $ bitbake-layers add-layer <path_to_project>/layers/meta-ti/meta-ti-extras
 
 Run vision apps on EVM target in WRLinux + RTOS mode (via SD card boot) with below
 steps:
