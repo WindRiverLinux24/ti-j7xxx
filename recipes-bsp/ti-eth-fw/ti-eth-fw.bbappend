@@ -12,8 +12,8 @@ ALTERNATIVE:${PN}:ti-j72xx = "\
                     "
 
 ALTERNATIVE:${PN}:ti-j78xx = "\
-                    j784s4-mcu-r5f0_0-fw \
-                    j784s4-mcu-r5f0_0-fw-sec \
+                    j784s4-main-r5f0_0-fw \
+                    j784s4-main-r5f0_0-fw-sec \
                     "
 DEPENDS:append:ti-j7 = "${@ '' if d.getVar('TI_SECURE_DEV_PKG_K3') else ' ti-k3-secdev-native' }"
 TI_K3_SECDEV_INSTALL_DIR:ti-j7 = "${STAGING_DIR_NATIVE}${datadir}/ti/ti-k3-secdev"
