@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2020 Wind River Systems, Inc.
+# Copyright (C) 2024 Wind River Systems, Inc.
 #
 
 COMPATIBLE_MACHINE:ti-j7 = "ti-j7"

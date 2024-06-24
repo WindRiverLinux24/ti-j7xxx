@@ -28,7 +28,7 @@ KERNEL_DTBVENDORED = "1"
 MULTILIBS ?= "multilib:lib32"
 DEFAULTTUNE:virtclass-multilib-lib32 ?= "armv7athf-neon"
 PREFERRED_PROVIDER_virtual/kernel ??= "linux-yocto"
-PREFERRED_VERSION_linux-yocto ?= "6.1%"
+PREFERRED_VERSION_linux-yocto ?= "6.6%"
 MACHINE_EXTRA_RRECOMMENDS += "linux-firmware-cadence linux-firmware-pvdec-full-bin linux-firmware-cnm"
 
 PREFERRED_PROVIDER_virtual/egl = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
