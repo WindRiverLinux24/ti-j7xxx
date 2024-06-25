@@ -65,7 +65,6 @@ PACKAGES:prepend:ti-j7 = "\
 	${PN}-cadence \
 	${PN}-cadence-license \
 	${PN}-pvdec-full-bin \
-	${PN}-cnm \
 	${PN}-cnm-licence \
 	${PN}-wave521c_codec_fw \
 	"
