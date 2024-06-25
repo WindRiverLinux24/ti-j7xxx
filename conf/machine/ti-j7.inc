@@ -1,7 +1,9 @@
 #@TYPE: Machine inc.
 #@NAME: ti-j7
 
-MACHINEOVERRIDES =. "ti-j7:"
+MACHINEOVERRIDES =. "ti-j7:k3:"
+
+BBMULTICONFIG += " k3r5"
 
 DEFAULTTUNE = "cortexa72"
 require conf/machine/include/arm/armv8a/tune-cortexa72.inc
@@ -19,7 +21,8 @@ MACHINE_EXTRA_RRECOMMENDS = " kernel-modules kernel-devicetree"
 IMAGE_FSTYPES += "tar.bz2 wic wic.bmap"
 WKS_FILE ?= "j7xxx-sdimage.wks"
 IMAGE_INSTALL:append = " kernel-devicetree kernel-image-image"
-do_image_wic[depends] += " mtools-native:do_populate_sysroot dosfstools-native:do_populate_sysroot"
+do_image_wic[depends] += " mtools-native:do_populate_sysroot dosfstools-native:do_populate_sysroot u-boot-ti-staging:do_deploy"
+do_image[mcdepends] += "mc::k3r5:u-boot-ti-staging:do_deploy"
 
 KERNEL_DTBDEST = "${KERNEL_IMAGEDEST}/dtb"
 KERNEL_DTBVENDORED = "1"
