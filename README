@@ -1,4 +1,4 @@
-			TI J784S4 EVM Board
+			TI J721E/J784S4 EVM Board
 
 
 1. About this document
@@ -25,6 +25,9 @@ This layer and wr-kernel layer should be added to bblayers.conf. This
 is done automatically when using the Wind River configure wrapper.
 
 Note:
+To build wrlinux for TI J721E EVM  board, use:
+
+	--machines ti-j72xx
 
 To build wrlinux for TI J784S4 EVM board, use:
 
@@ -132,6 +135,7 @@ Example settings for the monitor (u-boot) are shown below:
 
 nfsboot=setenv bootargs root=/dev/nfs rw nfsroot=$serverip:$rootpath \
 ip=$ipaddr:$serverip:$gatewayip:$netmask:$hostname:$netdev:off \
+console=$consoledev,$baudrate earlycon=ns16550a,mmio32,0x02800000;tftp $loadaddr $bootfile; \ (J721E EVM)
 console=$consoledev,$baudrate earlycon=ns16550a,mmio32,0x02880000;tftp $loadaddr $bootfile; \ (J784S4 EVM)
 tftp $fdtaddr $fdtfile;booti $loadaddr - $fdtaddr
 ethaddr=00:04:9F:02:00:FD
@@ -143,6 +147,7 @@ ipaddr=192.168.1.100
 serverip=192.168.1.2
 netdev=eth0
 bootfile=Image
+fdtfile=k3-j721e-common-proc-board.dtb (J721E EVM)
 fdtfile=k3-j784s4-evm.dtb (J784S4 EVM)
 rootpath=/tftpboot/rootfs
 consoledev=ttyS2
@@ -175,6 +180,9 @@ You have two ways to start the board:
 1. Use the uboot’s default startup environment variables.
 
 2. By set the below uboot environment variables:
+For J721E EVM:
+   $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
+   $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j721e-common-proc-board.dtb; booti 0x82000000 - 0x88000000
 
 For J784S4 EVM:
    $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02880000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
@@ -197,7 +205,7 @@ Simply add line as follows to ${buildprj}/build/conf/local.conf:
 	WRTEMPLATE = "feature/bsp-extras"
 
 And it is recommended to refer to the "Foundational Components" of the sdk
-release note "Processor SDK Linux for J784S4" from the TI web.
+release note "Processor SDK Linux for J721e/J784S4" from the TI web.
 
 6.1 CAN
 -------
@@ -248,10 +256,37 @@ Since both the u-boot and linux kernel download the firmwares from the
 rootfs directory "/lib/firmware", so NFS is not applicable to this case.
 Only WIC mode works fine.
 
+6.3 Watchdog (J721E EVM)
+------------------------
+
+In order to use watchdog, the configuration switch on J721EX-PM2-SOM board should be set with:
+
+SW2.1=OFF, SW2.2=ON, SW3.1=ON, SW3.2=OFF
+
+6.3.1 Usage and verification
+----------------------------
+
+        # echo 1 > /dev/watchdog
+
+6.4 UFS (J721E EVM)
+-------------------
+
+6.4.1 Usage and verification
+----------------------------
+
+Running the commands in u-boot to scan the Universal Flash Subsystem (UFS)
+devices.
+	=> ufs init
+	=> scsi scan
+
+If no relevant device was found, please refer to the following link for more
+information:
+	https://e2e.ti.com/support/processors/f/791/t/922975
+
 6.5 Graphics
 ------------
 
-J784S4 device is enabled with 3D graphics accelerator based on the Rogue 8XE/MG BXS-64-4 series
+J721E/J784S4 device is enabled with 3D graphics accelerator based on the Rogue 8XE/MG BXS-64-4 series
 from Imagination Technologies Inc. 3D-graphics apps call userspace libraries to drive
 the GPU directly by the graphics driver.
 
@@ -283,6 +318,12 @@ _EOF
 6.6 Video
 ---------
 
+J721E has the following hardware accelerators:
+Multi-Standard HD Video Decoder (DECODER) based on D5520MP2 from Imagination
+Technologies for accelerating multimedia decode.
+Multi-Standard HD Video Encoder (ENCODER) based on VXE384MP2 from Imagination
+Technologies for accelerating multimedia encode.
+
 The Encoder/Decoder (VENC/VDEC) is found on the J784S4 SoC. Combined H.264 and H.265
 encoder/decoder used in the Texas Instruments J784S4 SoC.
 
@@ -308,6 +349,8 @@ _EOF
 -------------------------------
 
 An example to test with GStreamer Pipelines on target board:
+J721E EVM:
+	$ gst-launch-1.0 filesrc location=/<path_to_file>  ! qtdemux ! h264parse ! v4l2h264dec ! videoconvert ! v4l2h264enc ! filesink location=/<path_to_file>
 
 J784S4 EVM:
 	$ gst-launch-1.0 filesrc location=/<path_to_file> ! rawvideoparse ! v4l2h264enc ! filesink location=/<path_to_file> sync=true
