@@ -52,6 +52,8 @@ the corresponding h/w features exist.
   o Network
 	+ CPSW2g Ethernet: 1x RGMII/DP83867 or 2x RGMII/RMII
 	+ CAN: 4x/6x CAN Interfaces, full CAN-FD support
+	+ CPSW9g Virtual Client: Jacinto 7 CPSW Proxy Client
+	+ TSN features: PTP/EST/CBS/IET
 
   o Storage
 	+ EMMC: 	16/32 GB memory, v5.1 compliant
@@ -93,7 +95,7 @@ J784S4 EVM:
 	x Camera: Three CSI2-RX Camera Interfaces
 	x NAND: 1Gb Non-Volatile NAND Memory, Octal-SPI
 	x Audio: Audio Codec (PCM3168A)
-	x Network: CPSW9g virtual MAC & CPSW9g Native Ethernet
+	x CPSW9g Native Ethernet Switch
 
 4. BSP Notes
 ============
