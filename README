@@ -370,8 +370,11 @@ In order to use OSPI Flash, the configuration switch on J784s4 EVM board should 
 
 SW2.1=OFF
 
-6.9 USB (J784S4 EVM)
---------------------
+6.9 USB
+-------
+
+6.9.1 USB2.0 & USB3.1 multiplex (J784S4 EVM)
+--------------------------------------------
 
 The J784S4-EVB supports a single USB interface. Therefore, the user must configure
 for either the USB3.1 Type C interface [J4] or the USB2.0 Type A interface [J5]. Both can not
@@ -385,11 +388,17 @@ Otherwise switch to the USB3.1 Type C interface, using the command on WRLinux sh
 Note: same as TI SDK, the bottom port of the two USB2.0 ports can not recognize
 U disk, the top port of the two USB2.0 ports works fine.
 
-6.9.1 USB3.1 Host
------------------
+6.9.2 USB3.1 Mode Switch
+------------------------
 
-The configuration switch on J784s4 EVM board should be set with:
-    SW2.[4:3] = 00
+For J784S4 EVM:
+    SW2.[4:3] = 00   DFP(Downstream Facing Port)
+    SW2.[4:3] = 01   DRP(Dual Role Port)
+    SW2.[4:3] = 1X   UFP(Upstream Facing Port)
+For J721E EVM:
+    SW3.[4:3] = 00   DFP(Downstream Facing Port)
+    SW3.[4:3] = 10   DRP(Dual Role Port)
+    SW3.[4:3] = X1   UFP(Upstream Facing Port)
 
 6.10 Vision Apps
 ----------------
