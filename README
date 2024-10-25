@@ -428,6 +428,7 @@ _EOF
 	   graphic feature first. Add line as follows to ${buildprj}/build/conf/local.conf:
 
 	   $ cat << _EOF >> conf/local.conf
+LICENSE_FLAGS_ACCEPTED += "commercial"
 CUSTOMER_RECIPES:meta-python += 'python3-yamlloader'
 CUSTOMER_RECIPES:openembedded-layer += 'glm'
 DISTROOVERRIDES:append = ":adas"
