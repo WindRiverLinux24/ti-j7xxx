@@ -44,6 +44,7 @@ PREFERRED_PROVIDER_virtual/libgbm = "${@bb.utils.contains("MACHINE_FEATURES", "g
 PREFERRED_PROVIDER_virtual/libgl = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
 PREFERRED_PROVIDER_virtual/libglx = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
 PREFERRED_PROVIDER_virtual/mesa = "${@bb.utils.contains("MACHINE_FEATURES", "gpu", "mesa-pvr", "mesa", d)}"
+PREFERRED_VERSION_mesa-pvr = "23.2.1"
 # Set this to empty string to prevent xwayland config from being added
 PACKAGECONFIG:pn-weston-init = ""
 
