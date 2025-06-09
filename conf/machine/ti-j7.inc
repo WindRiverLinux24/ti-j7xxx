@@ -48,7 +48,7 @@ PREFERRED_VERSION_mesa-pvr = "23.2.1"
 # Set this to empty string to prevent xwayland config from being added
 PACKAGECONFIG:pn-weston-init = ""
 
-NON_MULTILIB_RECIPES:append = " u-boot-ti-staging optee-os trusted-firmware-a ti-rtos-echo-test-fw ti-dm-fw ti-eth-fw ti-k3-secdev"
+NON_MULTILIB_RECIPES:append = " u-boot-ti-staging optee-os trusted-firmware-a ti-rtos-echo-test-fw ti-dm-fw ti-eth-fw-j721e ti-eth-fw-j784s4 ti-k3-secdev"
 # For ostree
 OSTREE_BOOTLOADER_INCLUDE ?= ""
 
